@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>koalas 客服</title>
+    <style type="text/css">
+        body{
+            background: url("http://host:8020/static/chat/images/bg.jpg") no-repeat ;
+            background-size: cover;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        li,
+        img,
+        label,
+        input {
+            vertical-align: middle;
+        }
+
+        img {
+            display: block;
+            max-height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        ul, li {
+            list-style: none;
+        }
+
+        -webkit-scrollbar-track {
+            background-color: transparent;
+        }
+
+        .defaultPage {
+        / / 缺省页 width: 200 px;
+            height: 300px;
+            margin-top: 120px;
+        }
+
+        .defaultPage > .img-box {
+            width: 120px;
+            height: 120px;
+            margin: 20px auto;
+        }
+
+        .defaultPage > .img-box > img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .defaultPage > .noMsg {
+            margin: 20px 0;
+            text-align: center;
+            font-size: 14px;
+            color: rgba(153, 153, 153, 1);
+        }
+
+        .defaultPage > .helpButton {
+            margin: 20px 40px;
+            text-align: center;
+            font-size: 14px;
+            line-height: 42px;
+            color: #fff;
+            background-color: #000000;
+        }
+
+        .kefu {
+            display: flex;
+            margin: auto;
+            border: 1px solid #333;
+            position: absolute;
+            top: 50px;
+            left: 250px;
+            right: 250px;
+            bottom: 50px;
+        }
+
+        .left {
+            width: 18%;
+            overflow-x:hidden; overflow-y:auto;
+            border-right: 1px solid #999;
+            background-color: #333;
+        }
+
+        .left .list {
+            height: 100%;
+        }
+
+        .left .list .list-item {
+            display: flex;flex-wrap: nowrap;
+            padding: 15px;overflow: hidden;
+            border-bottom: 1px solid #999;
+            color: #fff;
+        }
+        .cur{
+            background-color: #333;
+            opacity:0.6;
+        }
+        .left .list .list-item .img-box {
+            position: relative;
+            width: 36px; height: 36px;
+            margin-right: 10px;
+            border-radius: 4px;
+        }
+
+        .left .list .list-item .img-box img {
+            width: 100%;height: 100%;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .left .list .list-item .bandage{
+            display:inline-block ;
+            position: absolute;right: -8px;top:-8px;
+            width:16px;height: 16px;border-radius: 12px;
+            text-align: center;
+            font-size:12px;line-height: 16px;
+            background-color: red;
+        }
+        .left .list .list-item .bandage span{
+            color: #fff;
+        }
+        .left .list .list-item .info{
+            flex: 1;padding-left: 10px;
+        }
+        .left .list .list-item .name {
+            font-size: 14px;line-height: 22px;
+        }
+        .left .list .list-item .text{
+            display: flex;flex-wrap: nowrap;
+            font-size:12px;
+            text-align: left;
+        }
+        .left .list .list-item .text span{
+            flex:1;
+        }
+        .right {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background-color: #c3c3c3;
+        }
+
+        .right .name {
+            position: relative;
+            width: 100%;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            border-bottom: 1px solid #999;
+        }
+        .name .moreMsg{
+            position: absolute; left:46%;top: 61px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 6px;
+            background-color: #FFF;
+            color: red;
+            font-size:12px;line-height: 20px;
+            z-index:98;
+        }
+        .right .content {
+            flex:1;
+            overflow-x:hidden; overflow-y:auto;
+            display: flex;flex-direction: column;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            z-index: 88;
+        }
+
+        .right .content .message{
+            margin-top: 24px;
+            flex: 1;
+        }
+        .right .send_msg {
+            position: relative;
+            height: 160px;
+            overflow: hidden;
+            padding: 10px;
+            border-top: 1px solid #999;
+            z-index: 2;
+        }
+
+        .right .send_msg .input_text {
+            display: block;
+            width: 100%;
+            height: 60%;
+            box-sizing: border-box;
+            padding: 10px;
+            background-color: #c3c3c3;
+        }
+
+        .right .send_msg .btn_send {
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            width: 70px;
+            height: 22px;
+            margin-top: 100px;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 22px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+        .content .time{
+            display: flex;
+            justify-content: center;
+            color: #fff;
+            line-height: 40px;
+            z-index: 4;
+        }
+        .content .reply {
+            display: flex;
+            width: 80%;
+            margin-bottom: 15px;
+        }
+
+        .content .reply .img-box, .content .user .img-box {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+        }
+
+        .content .reply .img-box img, .content .user .img-box img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .content .reply .text-cont {
+            flex: 1;
+            padding: 4px 0;
+            margin-left: 15px;
+        }
+
+        .content .reply .text-cont .text, .content .user .text-cont .text {
+            display: inline-block;
+            padding: 4px 6px;
+            font-size: 14px;
+            line-height: 28px;
+            border-radius: 4px;
+            border: 1px solid #999;
+            background-color: #fff;
+        }
+        .content .user .text-cont img{
+            float: right;
+        }
+        .content .show {
+            visibility: hidden;
+        }
+
+        .content .user {
+            float: right;
+            display: flex;
+            width: 80%;
+            margin-bottom: 15px;
+        }
+
+        .content .user .text-cont {
+            flex: 1;
+            text-align: right;
+            padding: 4px;
+            margin-right: 15px;
+        }
+
+        .content .user .text-cont .text {
+            background-color: #b2e281;
+        }
+
+        .content .user .img-box {
+            width: 40px;
+            height: 40px;
+        }
+
+        .content .user .img-box img {
+            width: 100%;
+            height: 100%;
+        }
+        .bigimg{width:600px;position: fixed;left: 0;top: 0; right: 0;bottom: 0;margin:auto;display: none;z-index:9999;}
+	.mask{position: fixed;left: 0;top: 0; right: 0;bottom: 0;background-color: #000;opacity:0.5;filter: Alpha(opacity=50);z-index: 98;transition:all 1s;display: none}
+	    .bigbox{width:840px;background: #fff;border:1px solid #ededed;margin:0 auto;border-radius: 10px;overflow: hidden;padding:10px;}
+	    .bigbox>.text-cont{width:400px;height:250px;float:left;border-radius:5px;overflow: hidden;margin: 0 10px 10px 10px;}
+	    .bigbox>.imgbox>img{width:100%;}
+        .text-cont:hover{cursor:zoom-in}
+        .mask:hover{cursor:zoom-out}
+        .mask>img{position: fixed;right:10px;top: 10px;width: 60px;}
+        .mask>img:hover{cursor:pointer}
+    </style>
+</head>
+<body>
+<img class="bigimg">
+<div class="mask">
+    <img src="http://host:8020/static/chat/images/close.png" alt="">
+</div>
+<div class="kefu">
+    <div class="left">
+        <ul class="list">
+
+            <li class="list-item" :class="{cur: iscur === idx}" @click="handleSelect(item);iscur=idx" v-for="(item,idx) in senderLis" :key="idx">
+                <div class="img-box">
+                    <img :src="[[ item.user_pic ]]">
+                    <div class="bandage" v-if="item.count !== 0">
+                        <span >[[item.count]]</span>
+                    </div>
+                </div>
+                <div class="info">
+                   <span class="name">[[ item.username ]]</span>
+                    <div class="text" v-html="item.last_send_message">
+                    </div>
+                </div>
+            </li>
+
+
+        </ul>
+    </div>
+    <div class="right">
+        <div class="name" v-if="!resultShow">
+            <span>[[ name ]]</span>
+            <div class="moreMsg" @click="getMoreMsg" v-if="next">
+                <span>更多消息</span>
+            </div>
+        </div>
+        <div class="defaultPage" v-if="resultShow">
+            <div class="img-box">
+                <img :src="defaultPage">
+            </div>
+            <div class="noMsg">
+                <span>未选择聊天!</span>
+            </div>
+        </div>
+        <div class="content" v-show="!resultShow">
+            <div v-for="(item,idx) in chatList" :key="idx" class="message">
+                    <div class="time">
+                        <span>[[item.create_time]]</span>
+                    </div>
+                <div class="reply" v-if="item.sender_name !== 'admin'">
+                    <div class="img-box">
+                        <img :src="clientImg"/>
+                    </div>
+                    <div class="text-cont" v-html="item.message">
+                    </div>
+                </div>
+                <div class="user" v-else>
+                    <div class="text-cont" v-html="item.message">
+                    </div>
+                    <div class="img-box">
+                        <img :src="userImg"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="send_msg" v-show="!resultShow">
+            <textarea id="dropBox" class="input_text" autofocus v-model.trim="value" @keyup.enter="sendMsg"></textarea>
+            <div class="btn_send" @click="sendMsg">发送</div>
+        </div>
+
+    </div>
+</div>
+
+</body>
+<script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+<script src="https://cdn.bootcss.com/axios/0.19.0-beta.1/axios.min.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+<!-- 自己去网上下载一个zoomjs文件, 放到服务器访问 -->
+<script src="http://host:8020/static/chat/js/zoom.js"></script>
+<script type="text/javascript">
+    var obj;
+    var global_host = "127.0.0.1:8000";
+    axios.defaults.withCredentials=true;
+
+    window.onbeforeunload= function(event) {
+           var flag =  confirm("确定离开此页面吗？");
+           if(flag==true){
+               vm.chatSocket.close();
+           }
+        return flag
+    };
+
+    var vm = new Vue({
+        el: '.kefu',
+        delimiters: ['[[', ']]'], // 修改vue模板符号，防止与django冲突
+        data: {
+            'resultShow': true,
+            'defaultPage': '',
+            'clientImg': '',
+            // 用户的聊天头像框
+            'userImg': 'http://host:8020/static/chat/images/user02.jpg',
+            'name': "",
+//            "senders": senders,
+            'iscur': '',
+            "chatList": "",
+            "next": "",
+            "value": '',
+            'chatSocket': '',
+            'senderLis': '',
+            'current_id': '',
+
+        },
+        methods: {
+            getCookie (name) {
+              var value = '; ' + document.cookie;
+              var parts = value.split('; ' + name + '=');
+              if (parts.length === 2) return parts.pop().split(';').shift()
+            },
+            getData(timeout){
+                var url = 'http://'+ global_host +'/api/chat/unread/records/';
+                axios.post(url, {timeout:timeout}, {headers:{'X-CSRFToken': this.getCookie('csrftoken')}}).then(res =>{
+                    this.senderLis = res.data;
+                    setTimeout(this.getData(30),300)
+                })
+            },
+            handleSelect(item){
+                this.clientImg = item.user_pic;
+                if(this.current_id === item.sender_id){
+                    return
+                }
+                else {this.current_id = item.sender_id}
+
+                if(this.chatSocket){
+                    this.chatSocket.close()
+                }
+                this.chatSocket = new WebSocket('ws://'+ global_host +'/ws/chat/?receiver=' + item.username );
+                $('.content').html('');
+                this.chatList = '';
+                this.resultShow = false;
+                this.name = item.username;
+                axios.get('http://'+ global_host +'/api/chat/records/' + item.sender_id + "/?page_size=10").then(res => {
+                    var data = res.data;
+                    this.chatList = data.results;
+                    this.next = data.next;
+                    this.$nextTick(function () {
+                        obj = new zoom('mask', 'bigimg','text-cont img');
+                        obj.init();
+                        $('.text-cont img').click(function () {
+                            $('.bigimg').attr('src', $(this).attr('src'))
+                         })
+                    })
+                }).then(function () {
+                    // 滚动到底部
+                    var h = $('.content')[0].scrollHeight;
+                    $('.content').scrollTop(h);
+                });
+
+                this.chatSocket.onmessage = function (e) {
+                    // 接收消息
+                    var data = JSON.parse(e.data);
+                    // 发起请求删除redis中记录
+                    axios({
+                        method:'delete',
+                        url:'http://'+ global_host +'/api/chat/records/' + item.sender_id + "/",
+                        headers: {'X-CSRFToken': vm.getCookie('csrftoken')}
+                    }).then().catch(error =>{
+                        console.log(error.response.data)
+                    });
+                    var message = data['message'];
+                    $('.content').append('<div class="message"><div class="reply"><div class="img-box"><img src="'+ vm.clientImg +'"></div><div class="text-cont" >'+ message +'</div></div></div>');
+                    obj.init();
+                    $('.text-cont img').click(function () {
+                         $('.bigimg').attr('src', $(this).attr('src'))});
+                    // 滚动到底部
+                    var h = $('.content')[0].scrollHeight;
+                    $('.content').scrollTop(h);
+                };
+                this.chatSocket.onclose = function (e) {
+                    console.error('Chat socket closed unexpectedly');
+                 };
+                // 发起请求删除redis中记录
+                axios({
+                    method:'delete',
+                    url:'http://'+ global_host +'/api/chat/records/' + item.sender_id + "/",
+                    headers: {'X-CSRFToken': this.getCookie('csrftoken')}
+                }).then().catch(error =>{
+                    console.log(error.response.data)
+                })
+
+            },
+            getMoreMsg(){
+                var url = this.next;
+//                alert(url)
+                axios.get(url).then(res =>{
+                    var data = res.data;
+                    this.next = data.next;
+                    this.chatList = data.results.concat(this.chatList)
+                })
+            },
+            sendMsg(){
+                if(!this.value||this.value ===''){
+                    alert("请输入消息");
+                    return
+                }
+                this.chatSocket.send(JSON.stringify({
+                'message': '<span class="text" >'+ this.value +'</span>'
+                }));
+                $('.content').append('<div class="message"><div class="user"><div class="text-cont"><span class="text">' + this.value + '</span></div> <div class="img-box"><img src="'+ this.userImg +'"></div></div></div>' );
+
+                this.value = '';
+
+                // 滚动到底部
+                var h = $('.content')[0].scrollHeight;
+                $('.content').scrollTop(h);
+            }
+        },
+        created(){
+            this.getData(0);
+        },
+        mounted(){
+
+        }
+    })
+
+    var dropBox;
+  window.onload=function(){
+   dropBox = document.getElementById("dropBox");
+   // 鼠标进入放置区时
+   dropBox.ondragenter = ignoreDrag;
+   // 拖动文件的鼠标指针位置放置区之上时发生
+   dropBox.ondragover = ignoreDrag;
+   dropBox.ondrop = drop;
+  }
+
+  function ignoreDrag(e){
+   // 确保其他元素不会取得该事件
+   e.stopPropagation();
+   e.preventDefault();
+  }
+  function drop(e){
+   e.stopPropagation();
+   e.preventDefault();
+
+   // 取得拖放进来的文件
+   var data = e.dataTransfer;
+   var files = data.files;
+   // 将其传给真正的处理文件的函数
+
+   var file = files[0];
+
+   var reader = new FileReader();
+   reader.onload=function(e){
+
+    $('.content').append('<div class="message"><div class="user"><div class="text-cont"><img style="width: 80px; height: 60px;" src="'+e.target.result+'" data-preview-src=""></div> <div class="img-box"><img src="'+ vm.userImg +'"></div></div></div>' );
+    obj.init();
+    $('.text-cont img').click(function () {
+        $('.bigimg').attr('src', $(this).attr('src'))});
+
+   vm.chatSocket.send(JSON.stringify({
+        'message': e.target.result
+    }));
+   };
+   reader.readAsDataURL(file);
+  }
+</script>
+</html>
